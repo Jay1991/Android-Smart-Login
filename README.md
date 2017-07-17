@@ -2,6 +2,13 @@
 
 ![Image](https://raw.githubusercontent.com/CodelightStudios/Android-Smart-Login/master/Screenshots/Info_new.png)
 
+
+# Improvements made from the original REPO
+
+- New improved design of the sample app as the image displayed above for quick starting your implementation.
+- Improved Implementation of **Facebook** login
+
+
 # What's in the box
 
 - The login framework for your app
