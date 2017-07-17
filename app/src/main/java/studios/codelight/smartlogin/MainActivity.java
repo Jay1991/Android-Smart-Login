@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.support.design.widget.TextInputLayout;
+import com.facebook.FacebookSdk;
 
 import studios.codelight.smartloginlibrary.LoginType;
 import studios.codelight.smartloginlibrary.SmartLogin;
@@ -22,8 +24,10 @@ import studios.codelight.smartloginlibrary.util.SmartLoginException;
 
 
 public class MainActivity extends AppCompatActivity implements SmartLoginCallbacks {
-
-    private Button facebookLoginButton, googleLoginButton, customSigninButton, customSignupButton, logoutButton;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private Button facebookLoginButton, googleLoginButton, customSigninButton, logoutButton;
+    private View customSignupButton;
+    private TextInputLayout passwordTextInputLayout,emailTextInputLayout;
     private EditText emailEditText, passwordEditText;
     SmartUser currentUser;
     //GoogleApiClient mGoogleApiClient;
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SmartLoginCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         bindViews();
         setListeners();
 
@@ -53,21 +57,21 @@ public class MainActivity extends AppCompatActivity implements SmartLoginCallbac
     private void refreshLayout() {
         currentUser = UserSessionManager.getCurrentUser(this);
         if (currentUser != null) {
-            Log.d("Smart Login", "Logged in user: " + currentUser.toString());
+            Log.d(TAG, "Logged in user: " + currentUser.toString());
             facebookLoginButton.setVisibility(View.GONE);
             googleLoginButton.setVisibility(View.GONE);
             customSigninButton.setVisibility(View.GONE);
             customSignupButton.setVisibility(View.GONE);
-            emailEditText.setVisibility(View.GONE);
-            passwordEditText.setVisibility(View.GONE);
+            emailTextInputLayout.setVisibility(View.GONE);
+            passwordTextInputLayout.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
         } else {
             facebookLoginButton.setVisibility(View.VISIBLE);
             googleLoginButton.setVisibility(View.VISIBLE);
             customSigninButton.setVisibility(View.VISIBLE);
             customSignupButton.setVisibility(View.VISIBLE);
-            emailEditText.setVisibility(View.VISIBLE);
-            passwordEditText.setVisibility(View.VISIBLE);
+            passwordTextInputLayout.setVisibility(View.VISIBLE);
+            emailTextInputLayout.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
         }
     }
@@ -85,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements SmartLoginCallbac
             @Override
             public void onClick(View v) {
                 // Perform Facebook login
+                FacebookSdk.setApplicationId(getString(R.string.facebook_app_id));
+                FacebookSdk.sdkInitialize(MainActivity.this);
                 smartLogin = SmartLoginFactory.build(LoginType.Facebook);
                 smartLogin.login(config);
             }
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements SmartLoginCallbac
             @Override
             public void onClick(View v) {
                 // Perform custom sign up
+                Log.d(TAG,"Called signup button");
                 smartLogin = SmartLoginFactory.build(LoginType.CustomLogin);
                 smartLogin.signup(config);
             }
@@ -142,8 +149,10 @@ public class MainActivity extends AppCompatActivity implements SmartLoginCallbac
         facebookLoginButton = (Button) findViewById(R.id.facebook_login_button);
         googleLoginButton = (Button) findViewById(R.id.google_login_button);
         customSigninButton = (Button) findViewById(R.id.custom_signin_button);
-        customSignupButton = (Button) findViewById(R.id.custom_signup_button);
+        customSignupButton = findViewById(R.id.custom_signup_button);
         emailEditText = (EditText) findViewById(R.id.email_edittext);
+        passwordTextInputLayout = (TextInputLayout) findViewById(R.id.password_text_input_layout);
+        emailTextInputLayout = (TextInputLayout) findViewById(R.id.email_text_input_layout);
         passwordEditText = (EditText) findViewById(R.id.password_edittext);
         logoutButton = (Button) findViewById(R.id.logout_button);
     }
